@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot-demo-deploy
+  namespace: dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spring-boot-demo
+  template:
+    metadata:
+      labels:
+        app: spring-boot-demo
+    spec:
+      containers:
+      - image: 417725290169.dkr.ecr.ap-south-2.amazonaws.com/vedha:latest
+        name: spring-boot-demo
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-boot-demo-service
+  namespace: dev
+spec:
+  selector:
+    app: spring-boot-demo
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer
